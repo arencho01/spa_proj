@@ -35,7 +35,7 @@ class User {
         $stmt = $this->db->prepare($stmt);
         $stmt->execute(["username" => $username]);
 
-        return $stmt->fetch() > 0;
+        return $stmt->fetchColumn() > 0;
     }
 
     public function getUserPassword($username)

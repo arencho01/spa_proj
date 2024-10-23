@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
-   const loginForm = document.getElementById('login-form');
-   const registerForm = document.getElementById('register-form');
-   const operationForm = document.getElementById('operation-form');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const operationForm = document.getElementById('operation-form');
 
     loginForm.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -14,16 +14,115 @@ document.addEventListener('DOMContentLoaded', function () {
             body: JSON.stringify({action: 'login', login, password}),
             headers: {'Content-Type': 'application/json'}
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                // window.location.reload();
-                // console.log(data.status);
-                console.log(data.status)
-            } else {
-                // console.log(data.status);
-            }
-        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log(data.status)
+                } else {
+                    console.log(data.errors['userPass']);
+                }
+            });
+    });
+
+    // // Добавление операции
+    // operationForm.addEventListener('submit', function (e) {
+    //     e.preventDefault();
+    //     const amount = operationForm.querySelector('[name="amount"]').value;
+    //     const type = operationForm.querySelector('[name="type"]').value;
+    //     const comment = operationForm.querySelector('[name="comment"]').value;
+    //
+    //     fetch('/api/operation.php', {
+    //         method: 'POST',
+    //         body: JSON.stringify({action: 'add', amount, type, comment}),
+    //         headers: {'Content-Type': 'application/json'}
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         if (data.status === 'success') {
+    //             loadOperations();
+    //         } else {
+    //             alert('Failed to add operation');
+    //         }
+    //     });
+    // });
+    //
+    // // Загрузка последних операций
+    // function loadOperations() {
+    //     fetch('/api/operation.php', {
+    //         method: 'GET'
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         // Обновление таблицы операций
+    //         updateOperationsTable(data.operations);
+    //         // Обновление итогов
+    //         updateSummary(data.summary);
+    //     });
+    // }
+    //
+    // function updateOperationsTable(operations) {
+    //     const tableBody = document.getElementById('operations-table-body');
+    //     tableBody.innerHTML = '';
+    //     operations.forEach(operation => {
+    //         const row = document.createElement('tr');
+    //         row.innerHTML = `
+    //         <td>${operation.amount}</td>
+    //         <td>${operation.type}</td>
+    //         <td>${operation.comment}</td>
+    //         <td><button data-id="${operation.id}" class="delete-operation">Delete</button></td>
+    //     `;
+    //         tableBody.appendChild(row);
+    //     });
+    //
+    //     document.querySelectorAll('.delete-operation').forEach(button => {
+    //         button.addEventListener('click', function () {
+    //             const operationId = this.dataset.id;
+    //             deleteOperation(operationId);
+    //         });
+    //     });
+    // }
+    //
+    // function updateSummary(summary) {
+    //     document.getElementById('total-income').textContent = summary.total_income;
+    //     document.getElementById('total-expense').textContent = summary.total_expense;
+    // }
+    //
+    // function deleteOperation(id) {
+    //     fetch('/api/operation.php', {
+    //         method: 'POST',
+    //         body: JSON.stringify({action: 'delete', id}),
+    //         headers: {'Content-Type': 'application/json'}
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         if (data.status === 'success') {
+    //             loadOperations();
+    //         } else {
+    //             alert('Failed to delete operation');
+    //         }
+    //     });
+    // }
+    //
+    //     // Загрузка операций при старте
+    // loadOperations();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // let xhr = new XMLHttpRequest();
         // let formData = new FormData();
@@ -40,9 +139,9 @@ document.addEventListener('DOMContentLoaded', function () {
         //     }
         // };
         // xhr.send(formData);
-    });
-
-});
+//     });
+//
+// });
 
 
 

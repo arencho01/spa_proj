@@ -21,11 +21,13 @@ class AuthController {
 
         $errors = $this->validator->validateLoginFields($name, $password);
 
+//        var_dump(!empty($errors));
+
         if(!empty($errors)) {
             $_SESSION['user'] = $username;
-            return json_encode(['status' => 'success']);
+            return json_encode(['status' => 'fail', 'errors' => $errors], JSON_UNESCAPED_UNICODE);
         } else {
-            return json_encode(['status' => 'fail', 'errors' => $errors]);
+            return json_encode(['status' => 'success'], JSON_UNESCAPED_UNICODE);
         }
     }
 
