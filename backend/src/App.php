@@ -15,8 +15,8 @@ class App {
         switch ($action) {
             case 'login':
                 echo 'hello';
-//                $data = json_decode(file_get_contents('php://input'), true);
-//                echo json_encode($authController->login($data['username'], $data['password']));
+                $data = json_decode(file_get_contents('php://input'), true);
+                echo json_encode($authController->login($data['username'], $data['password']));
                 break;
 
             case 'register':

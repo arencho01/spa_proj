@@ -1,26 +1,51 @@
-let myForm = document.getElementById('login-form');
+document.addEventListener('DOMContentLoaded', function () {
+   const loginForm = document.getElementById('login-form');
+   const registerForm = document.getElementById('register-form');
+   const operationForm = document.getElementById('operation-form');
 
-myForm.addEventListener('submit', function (e) {
-    e.preventDefault();
+    loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-    let xhr = new XMLHttpRequest();
-    let formData = new FormData();
+        const login = loginForm.querySelector('[name="login"]').value;
+        const password = loginForm.querySelector('[name="password"]').value;
 
-    formData.append('username', document.getElementById('username').value);
-    xhr.open('POST', 'test.php', false);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            // Выводим ответ сервера на страницу
-            console.log('OK');
-            document.getElementById('result').innerHTML = 'Ответ сервера: ' + xhr.responseText;
-        } else {
-            console.error('Ошибка:', xhr.statusText);
-        }
-    };
+        fetch('src/auth.php', {
+            method: 'POST',
+            body: JSON.stringify({action: 'login', login, password}),
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // window.location.reload();
+                // console.log(data.status);
+                console.log(data.status)
+            } else {
+                // console.log(data.status);
+            }
+        })
 
-    xhr.send(formData);
+        // let xhr = new XMLHttpRequest();
+        // let formData = new FormData();
+        //
+        // formData.append('username', document.getElementById('username').value);
+        // xhr.open('POST', 'src/index.php', false);
+        // xhr.onload = function() {
+        //     if (xhr.status === 200) {
+        //         // Выводим ответ сервера на страницу
+        //         console.log('OK');
+        //         document.getElementById('result').innerHTML = 'Ответ сервера: ' + xhr.responseText;
+        //     } else {
+        //         console.error('Ошибка:', xhr.statusText);
+        //     }
+        // };
+        // xhr.send(formData);
+    });
 
 });
+
+
+
 
 // function ajax(method, url, data, callback) {
 //     const xhr = new XMLHttpRequest();

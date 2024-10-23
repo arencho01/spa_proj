@@ -1,13 +1,29 @@
 <?php
 
-use App\App;
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-require_once 'config/Database.php';
-require_once 'models/User.php';
-require_once 'models/FinanceOperation.php';
-require_once 'controllers/AuthController.php';
-require_once 'controllers/FinanceController.php';
-require_once 'App.php';
+use App\controllers\TestController;
+use App\controllers\AuthController;
 
-$app = new App();
-$app->handleRequest();
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+
+session_start();
+//require 'config/Database.php';
+//require 'controllers/AuthController.php';
+
+
+$authController = new AuthController();
+
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    echo $authController->login($data['login'], $data['password']);
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+}

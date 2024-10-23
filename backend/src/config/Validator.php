@@ -22,7 +22,7 @@ class Validator
 
         if (empty($name)) {
             $errors['userName'] = 'Это поле обязательно для заполнения';
-        } elseif ($this->userModel->findUserByUsername($name)) {
+        } elseif ($this->userModel->isUserNameTaken($name)) {
             $errors['userName'] = 'Пользователь с таким логином уже существует';
         }
 
@@ -45,12 +45,16 @@ class Validator
 
         if (empty($name)) {
             $errors['userName'] = 'Это поле обязательно для заполнения';
-        } elseif ($this->userModel->findUserByUsername($name)) {
+        } elseif (!$this->userModel->isUserNameTaken($name)) {
             $errors['userName'] = 'Пользователя с таким логином не существует';
         }
 
         if (empty($password)) {
             $errors['userPass'] = 'Это поле обязательно для заполнения';
+        }
+
+        if ($this->userModel->getUserPassword($name) != $password) {
+            $errors['userPass'] = 'Неправильный пароль';
         }
 
         return $errors;

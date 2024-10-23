@@ -8,7 +8,7 @@ use PDOException;
 class Database
 {
     private static string $host = "mysql";
-    private static string $dbname = "my_db";
+    private static string $dbname = "finances";
     private static string $user = "user";
     private static string $password = "123456";
     private static string $charset = "utf8mb4";
@@ -18,7 +18,7 @@ class Database
     {
         try {
             self::$conn = new PDO(
-              "mysql:host=" . self::$host . ":dbname=" . self::$dbname . ";charset=" . self::$charset, self::$user, self::$password
+              "mysql:host=" . self::$host . ";dbname=" . self::$dbname . ";charset=" . self::$charset, self::$user, self::$password
             );
             self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {

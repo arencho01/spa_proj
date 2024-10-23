@@ -2,6 +2,8 @@
 namespace App\models;
 
 use App\config\Database;
+use PDO;
+use PDOException;
 
 class User {
     private $db;
@@ -22,7 +24,7 @@ class User {
 //        return $stmt->execute(['username' => $username, 'password' => $hashedPassword]);
 //    }
 
-    public function findUserByUsername($username): bool
+    public function isUserNameTaken($username): bool
     {
         $stmt = "
                     SELECT COUNT(*)
@@ -36,10 +38,27 @@ class User {
         return $stmt->fetch() > 0;
     }
 
-    public function addUser($username, $password)
+    public function getUserPassword($username)
     {
-
+        $stmt = "
+                    SELECT `password`
+                    FROM users
+                    WHERE `name` = :username
+                    LIMIT 1
+                ";
+        $stmt = $this->db->prepare($stmt);
+        $stmt->execute(['username' => $username]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['password'];
     }
+
+//    public function addUser($username, $password)
+//    {
+//        $stmt = "
+//                    INSERT INTO `users` (name, password)
+//                    VALUES (:username, :password)
+//                ";
+//    }
 
 
 }
