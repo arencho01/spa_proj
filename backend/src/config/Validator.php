@@ -42,8 +42,6 @@ class Validator
     public function validateLoginFields($name, $password): array
     {
         $errors = [];
-        var_dump(json_encode($name));
-        var_dump(json_encode($this->userModel->isUserNameTaken($name)));
 
         if (empty($name)) {
             $errors['userName'] = 'Это поле обязательно для заполнения';
@@ -55,7 +53,7 @@ class Validator
             $errors['userPass'] = 'Это поле обязательно для заполнения';
         }
 
-        if (!empty($name) && $this->userModel->getUserPassword($name) != $password) {
+        if ($this->userModel->isUserNameTaken($name) && $this->userModel->getUserPassword($name) != $password) {
             $errors['userPass'] = 'Неправильный пароль';
         }
 

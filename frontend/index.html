@@ -13,15 +13,18 @@
     <div class="container">
         <div class="authentication__inner">
             <h2 class="title">Вход</h2>
+
             <form class="form" id="login-form">
                 <label class="form__label">
-                    <span class="form__label-span">Логин</span>
-                    <input class="form__inp" type="text" placeholder="Логин" name="login" required id="username">
+                    <span class="form__label-span">Логин:</span>
+                    <span class="form__label-err authentication__label-err-name" id="err-name"></span>
+                    <input class="form__inp" type="text" placeholder="Логин" name="login" id="username">
                 </label>
 
                 <label class="form__label">
                     <span class="form__label-span">Пароль:</span>
-                    <input class="form__inp" type="password" id="login-password" name="password" placeholder="Пароль" required>
+                    <span class="form__label-err authentication__label-err-pass" id="err-pass"></span>
+                    <input class="form__inp" type="password" id="login-password" name="password" placeholder="Пароль">
                 </label>
 
                 <div class="authentication__box">
@@ -30,8 +33,6 @@
                 </div>
             </form>
 
-            <div id="result"></div>
-
         </div>
     </div>
 </section>
@@ -39,43 +40,61 @@
 
 
 <!-- Главная страница -->
-<!--<div id="main-app" style="display: none;">-->
-<!--    <h2>Операции</h2>-->
-<!--    <form id="operation-form">-->
-<!--        <label for="operation-amount" class="operation-label">Сумма</label>-->
-<!--        <input type="number" id="operation-amount" placeholder="Amount" required>-->
+<section id="main-app" class="main-app" style="display: none;"> <!-- поменять -->
+    <div class="container">
+        <div class="main-app__inner">
+            <h2 id="welcome-msg"></h2>
+            <h2 class="title">Учет финансов</h2>
 
-<!--        <label class="operation-label" for="operation-type">Тип операции</label>-->
-<!--        <select id="operation-type">-->
-<!--            <option value="income">Приход</option>-->
-<!--            <option value="expense">Расход</option>-->
-<!--        </select>-->
+            <div class="main-app__box">
 
+                <form class="form main-app__form" id="operation-form">
+                    <h3>Добавить операцию</h3>
+                    <label class="form__label operation-label" for="operation-amount">
+                        <span class="form__label-span">Сумма:</span>
+                        <input class="form__inp" type="number" id="operation-amount" placeholder="Amount" name="sum" required>
+                    </label>
 
-<!--        <input type="text" id="comment" placeholder="Comment">-->
-<!--        <button type="submit">Add Operation</button>-->
-<!--    </form>-->
+                    <label class="form__label operation-label" for="operation-type">
+                        <span class="form__label-span">Тип операции:</span>
+                        <select class="form__inp" id="operation-type" name="type">
+                            <option value="income">Приход</option>
+                            <option value="expense">Расход</option>
+                        </select>
+                    </label>
 
-<!--    <h3>Последние 10 операций</h3>-->
-<!--    <table id="operations-table">-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th>ID</th>-->
-<!--            <th>Сумма</th>-->
-<!--            <th>Тип</th>-->
-<!--            <th>Описание</th>-->
-<!--            <th>Дата</th>-->
-<!--            <th>Действие</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody></tbody>-->
-<!--    </table>-->
+                    <label class="form__label">
+                        <span class="form__label-span">Описание</span>
+                        <input class="form__inp" type="text" id="comment" placeholder="Comment" name="comment">
+                    </label>
+                    <button class="btn" type="submit">Добавить</button>
+                </form>
 
-<!--    <div id="operation-summary">-->
-<!--        <p>Итого приход: <span id="total-income">0</span></p>-->
-<!--        <p>Итого расход: <span id="total-expenses">0</span></p>-->
-<!--    </div>-->
-<!--</div>-->
+                <div class="main-app__operations">
+                    <h3>Последние 10 операций</h3>
+                    <table id="operations-table">
+                        <thead>
+                        <tr>
+                            <th>Сумма</th>
+                            <th>Тип</th>
+                            <th>Описание</th>
+                            <th>Дата</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                    <div id="operation-summary">
+                        <p>Общий приход: <span id="total-income">0</span></p>
+                        <p>Общий расход: <span id="total-expenses">0</span></p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
 
 <script src="js/app.js"></script>
 <script src="js/auth.js"></script>

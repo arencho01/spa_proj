@@ -30,6 +30,7 @@ body {
 }
 .title {
     width: 100%;
+    padding: 0 0 35px;
 
     font-size: 40px;
     text-align: center;
@@ -75,7 +76,7 @@ body {
 
 
 
-
+/* ====== AUTHENTICATION ====== */
 .authentication__inner {
     display: flex;
     flex-direction: column;
@@ -85,4 +86,11 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+
+/* ====== MAIN-APP ====== */
+.main-app__box {
+    display: flex;
+    justify-content: space-between;
 }

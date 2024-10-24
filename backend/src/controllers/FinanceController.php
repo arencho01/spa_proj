@@ -1,34 +1,34 @@
 <?php
 namespace App\controllers;
 
-use App\models\FinanceOperation;
+use App\models\Finance;
 
 class FinanceController {
     private $financeModel;
 
     public function __construct() {
-        $this->financeModel = new FinanceOperation();
+        $this->financeModel = new Finance();
     }
 
-    public function addOperation($userId, $amount, $type, $comment) {
-        if ($this->financeModel->add($userId, $amount, $type, $comment)) {
-            return ['success' => true];
+    public function addOperation($sum, $type, $comment) {
+        if ($this->financeModel->add($sum, $type, $comment)) {
+            return json_encode(['status' => 'success']);
         }
 
-        return ['success' => false];
+        return json_encode(['status' => 'fail']);
     }
 
     public function getOperations($userId) {
         return $this->financeModel->getLatestOperations($userId);
     }
 
-    public function getSummary($userId) {
-        return $this->financeModel->getSummary($userId);
-    }
-
-    public function deleteOperation($operationId) {
-        return $this->financeModel->deleteOperation($operationId);
-    }
+//    public function getSummary($userId) {
+//        return $this->financeModel->getSummary($userId);
+//    }
+//
+//    public function deleteOperation($operationId) {
+//        return $this->financeModel->deleteOperation($operationId);
+//    }
 }
 
 

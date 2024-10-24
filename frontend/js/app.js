@@ -1,7 +1,27 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const welcomeMsg = document.getElementById('welcome-msg')
+    welcomeMsg.innerText = 'Добро пожаловать, ';
+
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
     const operationForm = document.getElementById('operation-form');
+
+    const errName = document.getElementById('err-name');
+    const errPass = document.getElementById('err-pass');
+
+    // Проверка сессии
+    fetch('src/auth.php', {
+        method: 'POST',
+        body: JSON.stringify({action: 'auth'}),
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.user) {
+            showMainApp();
+            welcomeMsg.innerText = welcomeMsg.innerText + ' ' + data.user;
+        }
+    });
 
     loginForm.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -14,52 +34,85 @@ document.addEventListener('DOMContentLoaded', function () {
             body: JSON.stringify({action: 'login', login, password}),
             headers: {'Content-Type': 'application/json'}
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    console.log(data.status)
-                } else {
-                    console.log(data.errors['userPass']);
-                }
-            });
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                deleteInputsErrs();
+                showMainApp();
+            } else {
+                addInputsErrs(data.errors)
+            }
+        });
     });
 
-    // // Добавление операции
-    // operationForm.addEventListener('submit', function (e) {
-    //     e.preventDefault();
-    //     const amount = operationForm.querySelector('[name="amount"]').value;
-    //     const type = operationForm.querySelector('[name="type"]').value;
-    //     const comment = operationForm.querySelector('[name="comment"]').value;
-    //
-    //     fetch('/api/operation.php', {
-    //         method: 'POST',
-    //         body: JSON.stringify({action: 'add', amount, type, comment}),
-    //         headers: {'Content-Type': 'application/json'}
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         if (data.status === 'success') {
-    //             loadOperations();
-    //         } else {
-    //             alert('Failed to add operation');
-    //         }
-    //     });
-    // });
-    //
-    // // Загрузка последних операций
-    // function loadOperations() {
-    //     fetch('/api/operation.php', {
-    //         method: 'GET'
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         // Обновление таблицы операций
-    //         updateOperationsTable(data.operations);
-    //         // Обновление итогов
-    //         updateSummary(data.summary);
-    //     });
-    // }
-    //
+
+    // Ф-ция для добавления ошибок
+    function addInputsErrs(errs) {
+        if (errs['userName'] !== '' && errs['userName'] !== undefined) {
+            errName.innerText = errs['userName'];
+        } else {
+            errName.innerText = '';
+        }
+
+        if (errs['userPass'] !== '' && errs['userPass'] !== undefined) {
+            errPass.innerText = errs['userPass'];
+        } else {
+            errPass.innerText = '';
+        }
+    }
+
+
+    // Ф-ция для удаления ошибок
+    function deleteInputsErrs() {
+        errName.innerText = '';
+        errPass.innerText = '';
+    }
+
+    // Ф-ция для отображения главного экрана
+    function showMainApp() {
+        document.getElementById("auth-form").style.display = "none";
+        document.getElementById("main-app").style.display = "block";
+    }
+
+    // Добавление операции
+    operationForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const sum = operationForm.querySelector('[name="sum"]').value;
+        const type = operationForm.querySelector('[name="type"]').value;
+        const comment = operationForm.querySelector('[name="comment"]').value;
+
+        fetch('src/operation.php', {
+            method: 'POST',
+            body: JSON.stringify({action: 'add', sum, type, comment}),
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                console.log('ok')
+                // loadOperations();
+            } else {
+                alert('Неправильно введены данные!');
+            }
+        });
+    });
+
+    // Загрузка последних операций
+    function loadOperations() {
+        fetch('src/operation.php', {
+            method: 'POST',
+            body: JSON.stringify({action: 'getLatest'}),
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Обновление таблицы операций
+            updateOperationsTable(data.operations);
+            // Обновление итогов
+            updateSummary(data.summary);
+        });
+    }
+
     // function updateOperationsTable(operations) {
     //     const tableBody = document.getElementById('operations-table-body');
     //     tableBody.innerHTML = '';

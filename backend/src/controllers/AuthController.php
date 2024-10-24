@@ -15,20 +15,25 @@ class AuthController {
 
     public function login($username, $password): false|string
     {
-
         $name = $this->validator->sanitizeInput(($username), ENT_QUOTES) ?? '';
         $password = $this->validator->sanitizeInput(($password), ENT_QUOTES) ?? '';
 
         $errors = $this->validator->validateLoginFields($name, $password);
 
-//        var_dump(!empty($errors));
 
         if(!empty($errors)) {
-            $_SESSION['user'] = $username;
             return json_encode(['status' => 'fail', 'errors' => $errors], JSON_UNESCAPED_UNICODE);
         } else {
-            return json_encode(['status' => 'success'], JSON_UNESCAPED_UNICODE);
+            $_SESSION['user'] = $username;
+            return json_encode(['status' => 'success', 'user_session' => $username], JSON_UNESCAPED_UNICODE);
         }
+    }
+
+    public function getSession()
+    {
+        $sessionUserName = $_SESSION['user'];
+
+        return json_encode($_SESSION, JSON_UNESCAPED_UNICODE);
     }
 
 
