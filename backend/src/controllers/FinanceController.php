@@ -2,6 +2,7 @@
 namespace App\controllers;
 
 use App\models\Finance;
+use App\controllers\AuthController;
 
 class FinanceController {
     private $financeModel;
@@ -10,8 +11,8 @@ class FinanceController {
         $this->financeModel = new Finance();
     }
 
-    public function addOperation($sum, $type, $comment) {
-        if ($this->financeModel->add($sum, $type, $comment)) {
+    public function addOperation($user_id, $sum, $type, $comment) {
+        if ($this->financeModel->add($user_id, $sum, $type, $comment)) {
             return json_encode(['status' => 'success']);
         }
 
@@ -19,16 +20,20 @@ class FinanceController {
     }
 
     public function getOperations($userId) {
-        return $this->financeModel->getLatestOperations($userId);
+
+        return json_encode($this->financeModel->getLatestOperations($userId));
     }
 
-//    public function getSummary($userId) {
-//        return $this->financeModel->getSummary($userId);
-//    }
-//
-//    public function deleteOperation($operationId) {
-//        return $this->financeModel->deleteOperation($operationId);
-//    }
+    public function getSummary($userId) {
+        return json_encode($this->financeModel->getSummary($userId));
+    }
+
+    public function deleteOperation($operationId) {
+        if($this->financeModel->deleteOperation($operationId)) {
+            return json_encode(['status' => 'success']);
+        };
+        return json_encode(['status' => 'fail']);
+    }
 }
 
 

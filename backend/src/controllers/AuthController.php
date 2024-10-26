@@ -24,21 +24,30 @@ class AuthController {
         if(!empty($errors)) {
             return json_encode(['status' => 'fail', 'errors' => $errors], JSON_UNESCAPED_UNICODE);
         } else {
+            $userId = $this->userModel->getUserId($username);
+
             $_SESSION['user'] = $username;
-            return json_encode(['status' => 'success', 'user_session' => $username], JSON_UNESCAPED_UNICODE);
+            $_SESSION['user_id'] = $userId;
+
+            return json_encode(['status' => 'success', 'user' => $username, 'user_id' => $userId], JSON_UNESCAPED_UNICODE);
         }
     }
 
-    public function getSession()
+    public function auth()
     {
-        $sessionUserName = $_SESSION['user'];
+        $response = $_SESSION['user'];
 
-        return json_encode($_SESSION, JSON_UNESCAPED_UNICODE);
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
+
     }
 
+    public function logout()
+    {
+        $_SESSION['user'] = null;
+        $_SESSION['user_id'] = null;
 
-
-
+        return json_encode(['status' => 'success', 'session' => $_SESSION['user']], JSON_UNESCAPED_UNICODE);
+    }
 
 
 

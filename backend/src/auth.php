@@ -17,10 +17,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     if ($data['action'] == 'auth') {
-        echo $authController->getSession();
+        echo $authController->auth();
     }
 
     if ($data && isset($data['action']) && $data['action'] === 'login') {
         echo $authController->login($data['login'], $data['password']);
     }
+
+    if ($data && isset($data['action']) && $data['action'] === 'logout') {
+        echo $authController->logout();
+    }
+
 }

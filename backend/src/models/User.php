@@ -52,6 +52,21 @@ class User {
         return $result['password'];
     }
 
+    public function getUserId($username)
+    {
+        $stmt = "
+                    SELECT `id`
+                    FROM `users`
+                    WHERE `name` = :username
+                    LIMIT 1
+                ";
+
+        $stmt = $this->db->prepare($stmt);
+        $stmt->execute(['username' => $username]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['id'];
+    }
+
 //    public function addUser($username, $password)
 //    {
 //        $stmt = "

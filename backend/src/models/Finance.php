@@ -2,6 +2,7 @@
 namespace App\models;
 
 use App\config\Database;
+use PDO;
 
 class Finance {
     private $db;
@@ -10,19 +11,19 @@ class Finance {
         $this->db = (new Database())->connection();
     }
 
-    public function add($sum, $type, $comment): bool
+    public function add($user_id, $sum, $type, $comment): bool
     {
         $stmt = "
-                    INSERT INTO finance_operations (sum, type, comment) 
-                    VALUES (:sum, :type, :comment)
+                    INSERT INTO finance_operations (user_id, sum, type, comment) 
+                    VALUES (:user_id, :sum, :type, :comment)
                 ";
 
         $stmt = $this->db->prepare($stmt);
-        $stmt->execute(['sum' => $sum, 'type' => $type, 'comment' => $comment]);
-        return $stmt->execute();
+        return $stmt->execute(['user_id' => $user_id, 'sum' => $sum, 'type' => $type, 'comment' => $comment]);
     }
 
-    public function getLatestOperations($userId) {
+    public function getLatestOperations($userId): false|array
+    {
         $stmt = "
                     SELECT *
                     FROM finance_operations
@@ -31,26 +32,45 @@ class Finance {
                     DESC
                     LIMIT 10
                 ";
+
         $stmt = $this->db->prepare($stmt);
-        $stmt->execute(['user_id' => $userId]);
-        return $stmt->fetchAll();
+        $stmt->execute(['userId' => $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-//    public function getSummary($userId) {
-//        $incomeStmt = $this->db->prepare("SELECT SUM(amount) FROM finance_operations WHERE user_id = :user_id AND type = 'income'");
-//        $expenseStmt = $this->db->prepare("SELECT SUM(amount) FROM finance_operations WHERE user_id = :user_id AND type = 'expense'");
-//
-//        $incomeStmt->execute(['user_id' => $userId]);
-//        $expenseStmt->execute(['user_id' => $userId]);
-//
-//        return [
-//            'totalIncome' => $incomeStmt->fetchColumn(),
-//            'totalExpenses' => $expenseStmt->fetchColumn()
-//        ];
-//    }
-//
-//    public function deleteOperation($operationId) {
-//        $stmt = $this->db->prepare("DELETE FROM finance_operations WHERE id = :id");
-//        return $stmt->execute(['id' => $operationId]);
-//    }
+    public function getSummary($userId) {
+        $incomeStmt = "
+                            SELECT SUM(sum)
+                            FROM finance_operations
+                            WHERE user_id = :userId
+                            AND type = 'приход'
+                       ";
+        $expenseStmt = "
+                            SELECT SUM(sum)
+                            FROM finance_operations
+                            WHERE user_id = :userId
+                            AND type = 'расход'
+                        ";
+
+        $incomeStmt = $this->db->prepare($incomeStmt);
+        $expenseStmt = $this->db->prepare($expenseStmt);
+
+        $incomeStmt->execute(['userId' => $userId]);
+        $expenseStmt->execute(['userId' => $userId]);
+
+        return [
+            'totalIncome' => $incomeStmt->fetchColumn(),
+            'totalExpenses' => $expenseStmt->fetchColumn()
+        ];
+    }
+
+    public function deleteOperation($operationId) {
+        $stmt = "
+                    DELETE FROM finance_operations
+                    WHERE id = :operationId
+                ";
+
+        $stmt = $this->db->prepare($stmt);
+        return $stmt->execute(['operationId' => $operationId]);
+    }
 }

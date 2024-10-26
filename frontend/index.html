@@ -40,10 +40,15 @@
 
 
 <!-- Главная страница -->
-<section id="main-app" class="main-app" style="display: none;"> <!-- поменять -->
+<section id="main-app" class="main-app" style="display: none;">
     <div class="container">
         <div class="main-app__inner">
-            <h2 id="welcome-msg"></h2>
+            <div class="main-app__header">
+                <h2 id="welcome-msg"></h2>
+                <nav>
+                    <button class="btn" id="logout-btn">Выйти</button>
+                </nav>
+            </div>
             <h2 class="title">Учет финансов</h2>
 
             <div class="main-app__box">
@@ -52,36 +57,37 @@
                     <h3>Добавить операцию</h3>
                     <label class="form__label operation-label" for="operation-amount">
                         <span class="form__label-span">Сумма:</span>
-                        <input class="form__inp" type="number" id="operation-amount" placeholder="Amount" name="sum" required>
+                        <input class="form__inp" type="number" id="operation-amount" name="sum" value="">
                     </label>
 
                     <label class="form__label operation-label" for="operation-type">
                         <span class="form__label-span">Тип операции:</span>
                         <select class="form__inp" id="operation-type" name="type">
-                            <option value="income">Приход</option>
-                            <option value="expense">Расход</option>
+                            <option value="приход">Приход</option>
+                            <option value="расход">Расход</option>
                         </select>
                     </label>
 
                     <label class="form__label">
                         <span class="form__label-span">Описание</span>
-                        <input class="form__inp" type="text" id="comment" placeholder="Comment" name="comment">
+                        <input class="form__inp" type="text" id="comment" value="" name="comment">
                     </label>
                     <button class="btn" type="submit">Добавить</button>
                 </form>
 
                 <div class="main-app__operations">
-                    <h3>Последние 10 операций</h3>
-                    <table id="operations-table">
-                        <thead>
-                        <tr>
-                            <th>Сумма</th>
-                            <th>Тип</th>
-                            <th>Описание</th>
-                            <th>Дата</th>
-                        </tr>
+                    <h3>Последние операции</h3>
+                    <table class="main-app__table" id="operations-table">
+                        <thead class="main-app__thead">
+                            <tr class="main-app__tr">
+                                <th class="main-app__th">Описание</th>
+                                <th class="main-app__th">Сумма</th>
+                                <th class="main-app__th">Тип</th>
+                                <th class="main-app__th">Дата</th>
+                                <th class="main-app__th"></th>
+                            </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody class="main-app__tbody" id="operations-table-body"></tbody>
                     </table>
 
                     <div id="operation-summary">

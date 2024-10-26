@@ -14,14 +14,14 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`name`, `password`)
 VALUES (
         'Aren',
-        'Aren'
+        '123'
        );
 
 CREATE TABLE IF NOT EXISTS `finance_operations` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT,
     `sum` DECIMAL(10, 2),
-    `type` ENUM('expense', 'income'),
+    `type` ENUM('приход', 'расход'),
     `comment` TEXT,
     `date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
