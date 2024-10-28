@@ -121,3 +121,16 @@ body {
     color: #fff;
     background-color: #dc3545;
 }
+
+
+/* ====== REGISTER-BLOCK ====== */
+.register__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.register__box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

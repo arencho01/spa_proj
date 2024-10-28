@@ -11,12 +11,6 @@ CREATE TABLE IF NOT EXISTS `users` (
     `password` VARCHAR(255) NOT NULL
 )ENGINE=innoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1;
 
-INSERT INTO `users` (`name`, `password`)
-VALUES (
-        'Aren',
-        '123'
-       );
-
 CREATE TABLE IF NOT EXISTS `finance_operations` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT,

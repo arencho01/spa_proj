@@ -12,23 +12,18 @@ class Database
     private static string $user = "user";
     private static string $password = "123456";
     private static string $charset = "utf8mb4";
-    private static object $conn;
 
-    public function __construct()
+    public static function connection()
     {
         try {
-            self::$conn = new PDO(
+            $conn = new PDO(
               "mysql:host=" . self::$host . ";dbname=" . self::$dbname . ";charset=" . self::$charset, self::$user, self::$password
             );
-            self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $conn;
         } catch (PDOException $e) {
             echo "Ошибка подключения к базе данных: " . $e->getMessage();
         }
-    }
-
-    public static function connection(): object
-    {
-        return self::$conn;
     }
 }
 

@@ -5,68 +5,42 @@ use App\models\Finance;
 use App\controllers\AuthController;
 
 class FinanceController {
-    private $financeModel;
-
-    public function __construct() {
-        $this->financeModel = new Finance();
-    }
-
-    public function addOperation($user_id, $sum, $type, $comment) {
-        if ($this->financeModel->add($user_id, $sum, $type, $comment)) {
-            return json_encode(['status' => 'success']);
+    public static function addOperation($sum, $type, $comment): void
+    {
+        $userId = $_SESSION['userId'];
+        if (Finance::add($userId, $sum, $type, $comment)) {
+            echo json_encode(['status' => 'success']);
         }
 
-        return json_encode(['status' => 'fail']);
+        echo json_encode(['status' => 'fail']);
     }
 
-    public function getOperations($userId) {
-
-        return json_encode($this->financeModel->getLatestOperations($userId));
+    public static function getOperations(): void
+    {
+        $userId = $_SESSION['userId'];
+        echo json_encode(Finance::getLatestOperations($userId));
     }
 
-    public function getSummary($userId) {
-        return json_encode($this->financeModel->getSummary($userId));
+    public static function getSummary(): void
+    {
+        $userId = $_SESSION['userId'];
+
+        $results = Finance::getSummary($userId);
+        if ($results['totalIncome'] == null) {
+            $results['totalIncome'] = '0';
+        }
+        if ($results['totalExpenses'] == null) {
+            $results['totalExpenses'] = '0';
+        }
+        echo json_encode($results);
     }
 
-    public function deleteOperation($operationId) {
-        if($this->financeModel->deleteOperation($operationId)) {
-            return json_encode(['status' => 'success']);
-        };
-        return json_encode(['status' => 'fail']);
+    public static function deleteOperation($operationId): void
+    {
+        if(Finance::deleteOperation($operationId)) {
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'fail']);
+        }
     }
 }
-
-
-
-
-//require_once '../models/Operation.php';
-//
-//class OperationController
-//{
-//    private $operation;
-//
-//    public function __construct($db)
-//    {
-//        $this->operation = new Operation($db);
-//    }
-//
-//    public function addOperation($userId, $amount, $type, $comment)
-//    {
-//        return $this->operation->addOperation($userId, $amount, $type, $comment);
-//    }
-//
-//    public function getLatestOperations($userId)
-//    {
-//        return $this->operation->getLatestOperations($userId);
-//    }
-//
-//    public function deleteOperation($operationId, $userId)
-//    {
-//        return $this->operation->deleteOperation($operationId, $userId);
-//    }
-//
-//    public function getSummary($userId)
-//    {
-//        return $this->operation->getSummary($userId);
-//    }
-//}

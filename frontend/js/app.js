@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const welcomeMsg = document.getElementById('welcome-msg')
+    const welcomeMsg = document.getElementById('welcome-msg');
     welcomeMsg.innerText = 'Добро пожаловать, ';
 
     const loginForm = document.getElementById('login-form');
@@ -10,23 +10,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const errName = document.getElementById('err-name');
     const errPass = document.getElementById('err-pass');
 
+    const errRegName = document.getElementById('err-reg-name');
+    const errRegPass = document.getElementById('err-reg-pass');
+
     checkSession();
 
     // Проверка сессии
     function checkSession() {
-        fetch('src/auth.php', {
+        fetch('index.php', {
             method: 'POST',
             body: JSON.stringify({action: 'auth'}),
             headers: {'Content-Type': 'application/json'}
         })
         .then(response => response.json())
         .then(data => {
-            if (data) {
+            if (data !== '') {
                 showMainApp();
-                welcomeMsg.innerText = welcomeMsg.innerText + ' ' + data.user;
+                welcomeMsg.innerText = welcomeMsg.innerText + ' ' + data;
                 loadOperations();
-            } else {
-                console.log(data);
             }
         });
     }
@@ -37,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const login = loginForm.querySelector('[name="login"]').value;
         const password = loginForm.querySelector('[name="password"]').value;
 
-        fetch('src/auth.php', {
+        fetch('index.php', {
             method: 'POST',
             body: JSON.stringify({action: 'login', login, password}),
             headers: {'Content-Type': 'application/json'}
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 deleteInputsErrs();
                 showMainApp();
                 welcomeMsg.innerText = welcomeMsg.innerText + ' ' + data.user;
+                loadOperations();
             } else {
                 addInputsErrs(data.errors)
             }
@@ -55,10 +57,48 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
+
+    const regBtn = document.getElementById('register-link');
+
+    regBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        showRegistration();
+    });
+
+
+    const regForm = document.getElementById('register-form');
+
+    registerForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const login = registerForm.querySelector('[name="login"]').value;
+        const password = registerForm.querySelector('[name="password"]').value;
+
+        fetch('index.php', {
+            method: 'POST',
+            body: JSON.stringify({action: 'register', login, password}),
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    deleteInputsErrsReg();
+                    showMainApp();
+                    welcomeMsg.innerText = welcomeMsg.innerText + ' ' + data.user;
+                    loadOperations();
+                } else {
+                    console.log(data)
+                    addInputsErrsReg(data.errors)
+                }
+            });
+    });
+
+
     logout.addEventListener('click', function (e) {
        e.preventDefault();
 
-        fetch('src/auth.php', {
+        fetch('index.php', {
             method: 'POST',
             body: JSON.stringify({action: 'logout'}),
             headers: {'Content-Type': 'application/json'}
@@ -66,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                showRegistration();
+                showLogin();
             }
         });
     });
@@ -87,23 +127,51 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function addInputsErrsReg(errs) {
+        console.log(errs)
+        if (errs['userName'] !== '' && errs['userName'] !== undefined) {
+            errRegName.innerText = errs['userName'];
+        } else {
+            errRegName.innerText = '';
+        }
 
-    // Ф-ция для удаления ошибок
+        if (errs['userPass'] !== '' && errs['userPass'] !== undefined) {
+            errRegPass.innerText = errs['userPass'];
+        } else {
+            errRegPass.innerText = '';
+        }
+    }
+
+
+    // Ф-ции для удаления ошибок
     function deleteInputsErrs() {
         errName.innerText = '';
         errPass.innerText = '';
     }
 
+    function deleteInputsErrsReg() {
+        errRegName.innerText = '';
+        errRegPass.innerText = '';
+    }
+
     // Ф-ция для отображения главного экрана
     function showMainApp() {
-        document.getElementById("auth-form").style.display = "none";
+        document.getElementById("auth-block").style.display = "none";
+        document.getElementById('register-block').style.display = "none";
         document.getElementById("main-app").style.display = "block";
     }
 
     // Ф-ция для отображения страницы регистрации
     function showRegistration() {
-        document.getElementById("auth-form").style.display = "block";
+        document.getElementById("auth-block").style.display = "none";
         document.getElementById("main-app").style.display = "none";
+        document.getElementById("register-block").style.display = "block";
+    }
+
+    function showLogin() {
+        document.getElementById("main-app").style.display = "none";
+        document.getElementById("register-block").style.display = "none";
+        document.getElementById("auth-block").style.display = "block";
     }
 
     // Добавление операции
@@ -117,9 +185,9 @@ document.addEventListener('DOMContentLoaded', function () {
         let typeValue = type.value;
         let commentValue = comment.value;
 
-        fetch('src/operation.php', {
+        fetch('index.php', {
             method: 'POST',
-            body: JSON.stringify({action: 'add', sumValue, typeValue, commentValue}),
+            body: JSON.stringify({action: 'add-operation', sumValue, typeValue, commentValue}),
             headers: {'Content-Type': 'application/json'}
         })
         .then(response => response.json())
@@ -134,16 +202,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Загрузка последних операций
     function loadOperations() {
-        fetch('src/operation.php', {
+        fetch('index.php', {
             method: 'POST',
-            body: JSON.stringify({action: 'getLatest'}),
+            body: JSON.stringify({action: 'get-latest'}),
             headers: {'Content-Type': 'application/json'}
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             updateOperationsTable(data);
-            // Обновление итогов
+
             updateSummary();
         });
     }
@@ -173,35 +240,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateSummary() {
 
-        fetch('src/operation.php', {
+        fetch('index.php', {
             method: 'POST',
             body: JSON.stringify({action: 'summary'}),
             headers: {'Content-Type': 'application/json'}
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
-
-            // if (data.totalIncome == null) {
-            //     document.getElementById('total-income').innerText = '0';
-            // } else {
-            //     document.getElementById('total-income').innerText = data.totalIncome;
-            // }
-
-            if (data.totalExpenses == null) {
-                document.getElementById('total-expense').innerText = 'hello';
-            } else {
-                document.getElementById('total-expense').innerText = data.totalExpenses;
-            }
+            document.getElementById('total-income').innerText = data.totalIncome;
+            document.getElementById('total-expenses').innerText = data.totalExpenses;
         });
     }
 
 
     // Ф-ция удаления операции
     function deleteOperation(operationId) {
-        fetch('src/operation.php', {
+        fetch('index.php', {
             method: 'POST',
-            body: JSON.stringify({action: 'delete', operationId}),
+            body: JSON.stringify({action: 'delete-operation', operationId}),
             headers: {'Content-Type': 'application/json'}
         })
         .then(response => response.json())

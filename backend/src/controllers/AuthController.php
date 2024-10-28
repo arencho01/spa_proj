@@ -5,83 +5,68 @@ use App\models\User;
 use App\config\Validator;
 
 class AuthController {
-    private $userModel;
-    private $validator;
 
-    public function __construct() {
-        $this->userModel = new User();
-        $this->validator = new Validator();
-    }
-
-    public function login($username, $password): false|string
+    public static function register($username, $password): void
     {
-        $name = $this->validator->sanitizeInput(($username), ENT_QUOTES) ?? '';
-        $password = $this->validator->sanitizeInput(($password), ENT_QUOTES) ?? '';
+        $name = Validator::sanitizeInput(($username), ENT_QUOTES) ?? '';
+        $password = Validator::sanitizeInput(($password), ENT_QUOTES) ?? '';
 
-        $errors = $this->validator->validateLoginFields($name, $password);
+        $errors = Validator::validateRegisterFields($name, $password);
 
-
-        if(!empty($errors)) {
-            return json_encode(['status' => 'fail', 'errors' => $errors], JSON_UNESCAPED_UNICODE);
+        if (!empty($errors)) {
+            echo json_encode(['status' => 'fail', 'errors' => $errors], JSON_UNESCAPED_UNICODE);
         } else {
-            $userId = $this->userModel->getUserId($username);
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
+            User::addUser($username, $hashedPassword);
+
+            $userId = User::getUserId($username);
             $_SESSION['user'] = $username;
-            $_SESSION['user_id'] = $userId;
+            $_SESSION['userId'] = $userId;
 
-            return json_encode(['status' => 'success', 'user' => $username, 'user_id' => $userId], JSON_UNESCAPED_UNICODE);
+            echo json_encode(['status' => 'success', 'user' => $username, 'user_id' => $userId], JSON_UNESCAPED_UNICODE);
         }
     }
 
-    public function auth()
+    public static function login($username, $password): void
     {
-        $response = $_SESSION['user'];
+        $name = Validator::sanitizeInput(($username), ENT_QUOTES) ?? '';
+        $password = Validator::sanitizeInput(($password), ENT_QUOTES) ?? '';
 
-        return json_encode($response, JSON_UNESCAPED_UNICODE);
+        $errors = Validator::validateLoginFields($name, $password);
 
+
+        if(!empty($errors)) {
+            echo json_encode(['status' => 'fail', 'errors' => $errors], JSON_UNESCAPED_UNICODE);
+        } else {
+            $userId = User::getUserId($username);
+
+            $_SESSION['user'] = $username;
+            $_SESSION['userId'] = $userId;
+
+            echo json_encode(['status' => 'success', 'user' => $username, 'user_id' => $userId], JSON_UNESCAPED_UNICODE);
+        }
     }
 
-    public function logout()
+    public static function auth(): void
+    {
+        if (!empty($_SESSION['user'])) {
+            $response = $_SESSION['user'];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode('', JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    public static function logout(): void
     {
         $_SESSION['user'] = null;
-        $_SESSION['user_id'] = null;
+        $_SESSION['userId'] = null;
 
-        return json_encode(['status' => 'success', 'session' => $_SESSION['user']], JSON_UNESCAPED_UNICODE);
+        $response = [];
+        $response['user'] = $_SESSION['user'];
+        $response['userId'] = $_SESSION['userId'];
+
+        echo json_encode(['status' => 'success', 'session' => $response], JSON_UNESCAPED_UNICODE);
     }
-
-
-
-//    public function register($username, $password) {
-//        if ($this->userModel->create($username, $password)) {
-//            return ['success' => true];
-//        }
-//
-//        return ['success' => false];
-//    }
-//
-//    public function register()
-//    {
-//        if ($this->isMethodPost()) {
-//
-//            $name = $_POST['name'];
-//            $password = $_POST['password'];
-//            $confirmPassword = $_POST['confirmPassword'];
-//
-//            $errors = $this->validator->validateRegisterFields($name, $password, $confirmPassword);
-//
-//            if (empty($errors)) {
-//                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-//
-//                if ($this->userModel->addUser($name, $hashedPassword)) {
-//                    $_SESSION['user'] = $name;
-//                }
-//            }
-//
-//        }
-//    }
-//
-//    public function isMethodPost(): bool
-//    {
-//        return $_SERVER['REQUEST_METHOD'] === 'POST';
-//    }
 }

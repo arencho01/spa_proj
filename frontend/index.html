@@ -9,7 +9,7 @@
 <body>
 
 <!-- Авторизация -->
-<section class="authentication" id="auth-form">
+<section class="authentication" id="auth-block">
     <div class="container">
         <div class="authentication__inner">
             <h2 class="title">Вход</h2>
@@ -29,7 +29,37 @@
 
                 <div class="authentication__box">
                     <button class="authentication__btn btn" id="login-btn" type="submit">Войти</button>
-                    <a class="form__link" href="#">Нету учетной записи?</a>
+                    <a class="form__link" href="#" id="register-link">Нету учетной записи?</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Регистрация -->
+<section class="register" id="register-block" style="display: none">
+    <div class="container">
+        <div class="register__inner">
+            <h2 class="title">Регистрация</h2>
+
+            <form class="form" id="register-form">
+                <label class="form__label">
+                    <span class="form__label-span">Логин:</span>
+                    <span class="form__label-err register__label-err-name" id="err-reg-name"></span>
+                    <input class="form__inp" type="text" placeholder="Логин" name="login" id="username-register">
+                </label>
+
+                <label class="form__label">
+                    <span class="form__label-span">Придумайте пароль:</span>
+                    <span class="form__label-err register__label-err-pass" id="err-reg-pass"></span>
+                    <input class="form__inp" type="password" id="login-reg-password" name="password" placeholder="Пароль">
+                </label>
+
+                <div class="register__box">
+                    <button class="register__btn btn" id="register-btn" type="submit">Зарегестритроваться</button>
                 </div>
             </form>
 
@@ -44,7 +74,7 @@
     <div class="container">
         <div class="main-app__inner">
             <div class="main-app__header">
-                <h2 id="welcome-msg"></h2>
+                <h2 id="welcome-msg">Добро пожаловать, <span id="welcome-msg-span"></span></h2>
                 <nav>
                     <button class="btn" id="logout-btn">Выйти</button>
                 </nav>
@@ -103,7 +133,5 @@
 </section>
 
 <script src="js/app.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/finance.js"></script>
 </body>
 </html>
