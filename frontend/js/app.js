@@ -88,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     welcomeMsg.innerText = welcomeMsg.innerText + ' ' + data.user;
                     loadOperations();
                 } else {
-                    console.log(data)
                     addInputsErrsReg(data.errors)
                 }
             });
@@ -209,8 +208,8 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data)
             updateOperationsTable(data);
-
             updateSummary();
         });
     }
@@ -242,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         fetch('index.php', {
             method: 'POST',
-            body: JSON.stringify({action: 'summary'}),
+            body: JSON.stringify({action: 'get-summary'}),
             headers: {'Content-Type': 'application/json'}
         })
         .then(response => response.json())
